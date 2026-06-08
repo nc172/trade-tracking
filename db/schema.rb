@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_08_143424) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_08_143727) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -25,6 +25,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_08_143424) do
   end
 
   create_table "trades", force: :cascade do |t|
+    t.string "buy_fill_id"
     t.datetime "created_at", null: false
     t.integer "duration_seconds"
     t.decimal "entry_price"
@@ -36,9 +37,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_08_143424) do
     t.bigint "import_id", null: false
     t.decimal "net_pnl"
     t.integer "quantity"
+    t.string "sell_fill_id"
     t.string "side"
     t.string "status"
     t.string "symbol"
+    t.decimal "tick_size"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["import_id"], name: "index_trades_on_import_id"
