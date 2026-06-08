@@ -1,0 +1,17 @@
+<h1>Trade Tracker Dashboard</h1>
+
+<% if user_signed_in? %>
+  <p>Welcome, <%= current_user.email %>.</p>
+
+  <p>This dashboard will show your trading stats after you upload trades.</p>
+
+  <%= button_to "Log out", destroy_user_session_path, method: :delete %>
+<% else %>
+  <p>Upload trading CSV files, track your performance, and analyze your edge.</p>
+
+  <p>
+    <%= link_to "Sign up", new_user_registration_path %>
+    |
+    <%= link_to "Log in", new_user_session_path %>
+  </p>
+<% end %>
