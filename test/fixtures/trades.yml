@@ -1,0 +1,33 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  import: one
+  symbol: MyString
+  side: MyString
+  quantity: 1
+  entry_time: 2026-06-08 10:34:24
+  exit_time: 2026-06-08 10:34:24
+  entry_price: 9.99
+  exit_price: 9.99
+  gross_pnl: 9.99
+  fees: 9.99
+  net_pnl: 9.99
+  status: MyString
+  duration_seconds: 1
+
+two:
+  user: two
+  import: two
+  symbol: MyString
+  side: MyString
+  quantity: 1
+  entry_time: 2026-06-08 10:34:24
+  exit_time: 2026-06-08 10:34:24
+  entry_price: 9.99
+  exit_price: 9.99
+  gross_pnl: 9.99
+  fees: 9.99
+  net_pnl: 9.99
+  status: MyString
+  duration_seconds: 1
