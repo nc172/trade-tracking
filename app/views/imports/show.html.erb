@@ -1,0 +1,28 @@
+<h1>Import Details</h1>
+
+<p>
+  <strong>Platform:</strong>
+  <%= @import.source_platform %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @import.status %>
+</p>
+
+<% if @import.file.attached? %>
+  <p>
+    <strong>File:</strong>
+    <%= @import.file.filename %>
+  </p>
+<% else %>
+  <p>No file attached.</p>
+<% end %>
+
+<p>
+  <%= link_to "Upload another file", new_import_path %>
+</p>
+
+<p>
+  <%= link_to "Back to Dashboard", root_path %>
+</p>

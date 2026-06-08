@@ -5,6 +5,10 @@
 
   <p>This dashboard will show your trading stats after you upload trades.</p>
 
+  <p>
+    <%= link_to "Upload CSV", new_import_path %>
+  </p>
+
   <%= button_to "Log out", destroy_user_session_path, method: :delete %>
 <% else %>
   <p>Upload trading CSV files, track your performance, and analyze your edge.</p>

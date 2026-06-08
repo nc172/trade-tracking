@@ -1,0 +1,34 @@
+<h1>Upload Trade File</h1>
+
+<%= form_with model: @import, local: true do |form| %>
+  <% if @import.errors.any? %>
+    <div>
+      <h2>Errors:</h2>
+      <ul>
+        <% @import.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :source_platform, "Source Platform" %>
+    <%= form.select :source_platform, ["Tradovate", "Manual CSV"] %>
+  </div>
+
+  <br>
+
+  <div>
+    <%= form.label :file, "CSV File" %>
+    <%= form.file_field :file %>
+  </div>
+
+  <br>
+
+  <%= form.submit "Upload" %>
+<% end %>
+
+<p>
+  <%= link_to "Back to Dashboard", root_path %>
+</p>
