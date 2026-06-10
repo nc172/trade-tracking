@@ -10,6 +10,13 @@
   <%= @import.status %>
 </p>
 
+<% if @import.error_message.present? %>
+  <p>
+    <strong>Error:</strong>
+    <%= @import.error_message %>
+  </p>
+<% end %>
+
 <% if @import.file.attached? %>
   <p>
     <strong>File:</strong>
@@ -18,6 +25,45 @@
 <% else %>
   <p>No file attached.</p>
 <% end %>
+
+<h2>Parsed Trades</h2>
+
+<p>
+  <strong>Total trades:</strong>
+  <%= @import.trades.count %>
+</p>
+
+<table border="1" cellpadding="6">
+  <thead>
+    <tr>
+      <th>Symbol</th>
+      <th>Side</th>
+      <th>Qty</th>
+      <th>Entry Time</th>
+      <th>Exit Time</th>
+      <th>Entry Price</th>
+      <th>Exit Price</th>
+      <th>Net P/L</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @import.trades.order(entry_time: :asc).each do |trade| %>
+      <tr>
+        <td><%= trade.symbol %></td>
+        <td><%= trade.side %></td>
+        <td><%= trade.quantity %></td>
+        <td><%= trade.entry_time %></td>
+        <td><%= trade.exit_time %></td>
+        <td><%= trade.entry_price %></td>
+        <td><%= trade.exit_price %></td>
+        <td><%= trade.net_pnl %></td>
+        <td><%= trade.status %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 <p>
   <%= link_to "Upload another file", new_import_path %>

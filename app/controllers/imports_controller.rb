@@ -10,7 +10,8 @@ class ImportsController < ApplicationController
     @import.status = "pending"
 
     if @import.save
-      redirect_to @import, notice: "File uploaded successfully."
+      Imports::TradovateCsvParser.new(@import).call
+      redirect_to @import, notice: "File uploaded and parsed successfully."
     else
       render :new, status: :unprocessable_entity
     end
