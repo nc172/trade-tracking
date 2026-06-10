@@ -1,0 +1,46 @@
+<h1>All Trades</h1>
+
+<p>
+  <%= link_to "Back to Dashboard", root_path %>
+  |
+  <%= link_to "Upload CSV", new_import_path %>
+</p>
+
+<p>
+  <strong>Total trades:</strong>
+  <%= @trades.count %>
+</p>
+
+<table border="1" cellpadding="6">
+  <thead>
+    <tr>
+      <th>Symbol</th>
+      <th>Side</th>
+      <th>Qty</th>
+      <th>Entry Time</th>
+      <th>Exit Time</th>
+      <th>Entry Price</th>
+      <th>Exit Price</th>
+      <th>Net P/L</th>
+      <th>Status</th>
+      <th>Details</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @trades.each do |trade| %>
+      <tr>
+        <td><%= trade.symbol %></td>
+        <td><%= trade.side %></td>
+        <td><%= trade.quantity %></td>
+        <td><%= trade.entry_time %></td>
+        <td><%= trade.exit_time %></td>
+        <td><%= trade.entry_price %></td>
+        <td><%= trade.exit_price %></td>
+        <td><%= trade.net_pnl %></td>
+        <td><%= trade.status %></td>
+        <td><%= link_to "View", trade_path(trade) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

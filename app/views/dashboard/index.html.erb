@@ -7,6 +7,8 @@
 
   <p>
     <%= link_to "Upload CSV", new_import_path %>
+    |
+    <%= link_to "View All Trades", trades_path %>
   </p>
 
   <%= button_to "Log out", destroy_user_session_path, method: :delete %>
