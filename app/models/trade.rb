@@ -7,6 +7,8 @@ class Trade < ApplicationRecord
   validates :quantity, presence: true
   validates :net_pnl, presence: true
 
+  validates :buy_fill_id, uniqueness: { scope: [:user_id, :sell_fill_id], allow_blank: true }
+
   def win?
     status == "win"
   end

@@ -38,25 +38,26 @@ module Imports
 
       net_pnl = parse_money(row["pnl"])
 
-      Trade.create!(
+      Trade.find_or_create_by!(
         user: @user,
-        import: @import,
-        symbol: row["symbol"],
-        side: side,
-        quantity: row["qty"].to_i,
-        entry_time: entry_time,
-        exit_time: exit_time,
-        entry_price: entry_price,
-        exit_price: exit_price,
-        gross_pnl: net_pnl,
-        fees: 0,
-        net_pnl: net_pnl,
-        status: trade_status(net_pnl),
-        duration_seconds: parse_duration(row["duration"]),
         buy_fill_id: row["buyFillId"],
-        sell_fill_id: row["sellFillId"],
-        tick_size: row["_tickSize"]
-      )
+        sell_fill_id: row["sellFillId"]
+      ) do |trade|
+        trade.import = @import
+        trade.symbol = row["symbol"]
+        trade.side = side
+        trade.quantity = row["qty"].to_i
+        trade.entry_time = entry_time
+        trade.exit_time = exit_time
+        trade.entry_price = entry_price
+        trade.exit_price = exit_price
+        trade.gross_pnl = net_pnl
+        trade.fees = 0
+        trade.net_pnl = net_pnl
+        trade.status = trade_status(net_pnl)
+        trade.duration_seconds = parse_duration(row["duration"])
+        trade.tick_size = row["_tickSize"]
+      end
     end
 
     def parse_money(value)
