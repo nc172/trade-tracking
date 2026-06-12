@@ -1,6 +1,10 @@
 class ImportsController < ApplicationController
   before_action :authenticate_user!
 
+  def index
+    @imports = current_user.imports.order(created_at: :desc)
+  end
+
   def new
     @import = current_user.imports.new
   end

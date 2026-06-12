@@ -39,6 +39,7 @@
           <% if user_signed_in? %>
             <%= link_to "Dashboard", root_path, class: "rounded-full px-4 py-2 text-slate-300 hover:bg-white/10 hover:text-white" %>
             <%= link_to "Trades", trades_path, class: "rounded-full px-4 py-2 text-slate-300 hover:bg-white/10 hover:text-white" %>
+            <%= link_to "Imports", imports_path, class: "rounded-full px-4 py-2 text-slate-300 hover:bg-white/10 hover:text-white" %>
             <%= link_to "Upload", new_import_path, class: "rounded-full bg-cyan-400 px-4 py-2 font-medium text-slate-950 hover:bg-cyan-300" %>
             <%= button_to "Log out", destroy_user_session_path, method: :delete, class: "rounded-full px-4 py-2 text-slate-300 hover:bg-white/10 hover:text-white" %>
           <% else %>
