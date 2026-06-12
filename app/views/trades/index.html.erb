@@ -1,46 +1,111 @@
-<h1>All Trades</h1>
+<section class="mb-8">
+  <p class="text-sm text-cyan-300">Trade database</p>
+  <h1 class="mt-2 text-4xl font-bold tracking-tight text-white">All Trades</h1>
+  <p class="mt-3 max-w-2xl text-slate-400">
+    Review every imported trade across all uploaded files.
+  </p>
+</section>
 
-<p>
-  <%= link_to "Back to Dashboard", root_path %>
-  |
-  <%= link_to "Upload CSV", new_import_path %>
-</p>
+<section class="mb-8 grid gap-4 md:grid-cols-3">
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+    <p class="text-sm text-slate-400">Total Trades</p>
+    <p class="mt-2 text-3xl font-bold text-white"><%= @trades.count %></p>
+  </div>
 
-<p>
-  <strong>Total trades:</strong>
-  <%= @trades.count %>
-</p>
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+    <p class="text-sm text-slate-400">Net P/L</p>
+    <% total_pnl = @trades.sum(:net_pnl) %>
+    <p class="mt-2 text-3xl font-bold <%= total_pnl.to_d >= 0 ? 'text-emerald-300' : 'text-red-300' %>">
+      $<%= total_pnl.round(2) %>
+    </p>
+  </div>
 
-<table border="1" cellpadding="6">
-  <thead>
-    <tr>
-      <th>Symbol</th>
-      <th>Side</th>
-      <th>Qty</th>
-      <th>Entry Time</th>
-      <th>Exit Time</th>
-      <th>Entry Price</th>
-      <th>Exit Price</th>
-      <th>Net P/L</th>
-      <th>Status</th>
-      <th>Details</th>
-    </tr>
-  </thead>
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+    <p class="text-sm text-slate-400">Latest Trade</p>
+    <p class="mt-2 text-xl font-semibold text-white">
+      <%= @trades.first&.exit_time&.strftime("%b %-d, %Y") || "No trades yet" %>
+    </p>
+  </div>
+</section>
 
-  <tbody>
-    <% @trades.each do |trade| %>
-      <tr>
-        <td><%= trade.symbol %></td>
-        <td><%= trade.side %></td>
-        <td><%= trade.quantity %></td>
-        <td><%= trade.entry_time %></td>
-        <td><%= trade.exit_time %></td>
-        <td><%= trade.entry_price %></td>
-        <td><%= trade.exit_price %></td>
-        <td><%= trade.net_pnl %></td>
-        <td><%= trade.status %></td>
-        <td><%= link_to "View", trade_path(trade) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<section class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+  <div class="mb-5 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div>
+      <h2 class="text-xl font-semibold text-white">Trade History</h2>
+      <p class="text-sm text-slate-400">
+        Newest trades are shown first.
+      </p>
+    </div>
+
+    <div class="flex gap-3">
+      <%= link_to "Upload CSV",
+                  new_import_path,
+                  class: "rounded-full bg-cyan-400 px-5 py-2.5 font-medium text-slate-950 hover:bg-cyan-300" %>
+
+      <%= link_to "Dashboard",
+                  root_path,
+                  class: "rounded-full border border-white/10 px-5 py-2.5 font-medium text-slate-300 hover:bg-white/10 hover:text-white" %>
+    </div>
+  </div>
+
+  <% if @trades.any? %>
+    <div class="overflow-x-auto">
+      <table class="w-full min-w-[1000px] text-left text-sm">
+        <thead class="border-b border-white/10 text-slate-400">
+          <tr>
+            <th class="px-4 py-3">Symbol</th>
+            <th class="px-4 py-3">Side</th>
+            <th class="px-4 py-3">Qty</th>
+            <th class="px-4 py-3">Entry Time</th>
+            <th class="px-4 py-3">Exit Time</th>
+            <th class="px-4 py-3">Entry</th>
+            <th class="px-4 py-3">Exit</th>
+            <th class="px-4 py-3">Net P/L</th>
+            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3">Details</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-white/10">
+          <% @trades.each do |trade| %>
+            <tr class="hover:bg-white/5">
+              <td class="px-4 py-3 font-medium text-white"><%= trade.symbol %></td>
+
+              <td class="px-4 py-3">
+                <span class="rounded-full px-3 py-1 text-xs font-medium <%= trade.side == 'long' ? 'bg-cyan-400/10 text-cyan-300' : 'bg-violet-400/10 text-violet-300' %>">
+                  <%= trade.side %>
+                </span>
+              </td>
+
+              <td class="px-4 py-3 text-slate-300"><%= trade.quantity %></td>
+              <td class="px-4 py-3 text-slate-400"><%= trade.entry_time&.strftime("%b %-d, %Y %H:%M") %></td>
+              <td class="px-4 py-3 text-slate-400"><%= trade.exit_time&.strftime("%b %-d, %Y %H:%M") %></td>
+              <td class="px-4 py-3 text-slate-300"><%= trade.entry_price %></td>
+              <td class="px-4 py-3 text-slate-300"><%= trade.exit_price %></td>
+
+              <td class="px-4 py-3 font-semibold <%= trade.net_pnl.to_d >= 0 ? 'text-emerald-300' : 'text-red-300' %>">
+                $<%= trade.net_pnl %>
+              </td>
+
+              <td class="px-4 py-3">
+                <span class="rounded-full px-3 py-1 text-xs font-medium <%= trade.status == 'win' ? 'bg-emerald-400/10 text-emerald-300' : trade.status == 'loss' ? 'bg-red-400/10 text-red-300' : 'bg-slate-400/10 text-slate-300' %>">
+                  <%= trade.status %>
+                </span>
+              </td>
+
+              <td class="px-4 py-3">
+                <%= link_to "View",
+                            trade_path(trade),
+                            class: "text-cyan-300 hover:text-cyan-200" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="rounded-2xl border border-white/10 bg-slate-900/60 p-6 text-slate-400">
+      No trades yet. Upload a CSV file to get started.
+    </div>
+  <% end %>
+</section>

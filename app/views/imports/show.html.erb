@@ -1,74 +1,106 @@
-<h1>Import Details</h1>
+<section class="mb-8">
+  <p class="text-sm text-cyan-300">Import result</p>
+  <h1 class="mt-2 text-4xl font-bold tracking-tight text-white">Import Details</h1>
+  <p class="mt-3 max-w-2xl text-slate-400">
+    Review the file status and trades created from this upload.
+  </p>
+</section>
 
-<p>
-  <strong>Platform:</strong>
-  <%= @import.source_platform %>
-</p>
+<section class="mb-8 grid gap-4 md:grid-cols-3">
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+    <p class="text-sm text-slate-400">Platform</p>
+    <p class="mt-2 text-xl font-semibold text-white"><%= @import.source_platform %></p>
+  </div>
 
-<p>
-  <strong>Status:</strong>
-  <%= @import.status %>
-</p>
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+    <p class="text-sm text-slate-400">Status</p>
+    <p class="mt-2 text-xl font-semibold <%= @import.status == 'completed' ? 'text-emerald-300' : @import.status == 'failed' ? 'text-red-300' : 'text-yellow-300' %>">
+      <%= @import.status %>
+    </p>
+  </div>
+
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+    <p class="text-sm text-slate-400">Trades Created</p>
+    <p class="mt-2 text-xl font-semibold text-white"><%= @import.trades.count %></p>
+  </div>
+</section>
 
 <% if @import.error_message.present? %>
-  <p>
-    <strong>Error:</strong>
-    <%= @import.error_message %>
-  </p>
+  <section class="mb-8 rounded-3xl border border-red-400/20 bg-red-400/10 p-5 text-red-200">
+    <p class="font-semibold">Import Error</p>
+    <p class="mt-2 text-sm"><%= @import.error_message %></p>
+  </section>
 <% end %>
 
-<% if @import.file.attached? %>
-  <p>
-    <strong>File:</strong>
-    <%= @import.file.filename %>
-  </p>
-<% else %>
-  <p>No file attached.</p>
-<% end %>
+<section class="mb-8 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+  <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+    <div>
+      <h2 class="text-xl font-semibold text-white">Uploaded File</h2>
 
-<h2>Parsed Trades</h2>
+      <% if @import.file.attached? %>
+        <p class="mt-2 text-slate-400"><%= @import.file.filename %></p>
+      <% else %>
+        <p class="mt-2 text-slate-400">No file attached.</p>
+      <% end %>
+    </div>
 
-<p>
-  <strong>Total trades:</strong>
-  <%= @import.trades.count %>
-</p>
+    <div class="flex gap-3">
+      <%= link_to "Upload Another",
+                  new_import_path,
+                  class: "rounded-full bg-cyan-400 px-5 py-2.5 font-medium text-slate-950 hover:bg-cyan-300" %>
 
-<table border="1" cellpadding="6">
-  <thead>
-    <tr>
-      <th>Symbol</th>
-      <th>Side</th>
-      <th>Qty</th>
-      <th>Entry Time</th>
-      <th>Exit Time</th>
-      <th>Entry Price</th>
-      <th>Exit Price</th>
-      <th>Net P/L</th>
-      <th>Status</th>
-    </tr>
-  </thead>
+      <%= link_to "All Trades",
+                  trades_path,
+                  class: "rounded-full border border-white/10 px-5 py-2.5 font-medium text-slate-300 hover:bg-white/10 hover:text-white" %>
+    </div>
+  </div>
+</section>
 
-  <tbody>
-    <% @import.trades.order(entry_time: :asc).each do |trade| %>
-      <tr>
-        <td><%= trade.symbol %></td>
-        <td><%= trade.side %></td>
-        <td><%= trade.quantity %></td>
-        <td><%= trade.entry_time %></td>
-        <td><%= trade.exit_time %></td>
-        <td><%= trade.entry_price %></td>
-        <td><%= trade.exit_price %></td>
-        <td><%= trade.net_pnl %></td>
-        <td><%= trade.status %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<section class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+  <div class="mb-4">
+    <h2 class="text-xl font-semibold text-white">Parsed Trades</h2>
+    <p class="text-sm text-slate-400">
+      Trades linked to this specific import.
+    </p>
+  </div>
 
-<p>
-  <%= link_to "Upload another file", new_import_path %>
-</p>
+  <div class="overflow-x-auto">
+    <table class="w-full min-w-[900px] text-left text-sm">
+      <thead class="border-b border-white/10 text-slate-400">
+        <tr>
+          <th class="px-4 py-3">Symbol</th>
+          <th class="px-4 py-3">Side</th>
+          <th class="px-4 py-3">Qty</th>
+          <th class="px-4 py-3">Entry Time</th>
+          <th class="px-4 py-3">Exit Time</th>
+          <th class="px-4 py-3">Entry</th>
+          <th class="px-4 py-3">Exit</th>
+          <th class="px-4 py-3">Net P/L</th>
+          <th class="px-4 py-3">Status</th>
+        </tr>
+      </thead>
 
-<p>
-  <%= link_to "Back to Dashboard", root_path %>
-</p>
+      <tbody class="divide-y divide-white/10">
+        <% @import.trades.order(entry_time: :asc).each do |trade| %>
+          <tr class="hover:bg-white/5">
+            <td class="px-4 py-3 font-medium text-white"><%= trade.symbol %></td>
+            <td class="px-4 py-3 text-slate-300"><%= trade.side %></td>
+            <td class="px-4 py-3 text-slate-300"><%= trade.quantity %></td>
+            <td class="px-4 py-3 text-slate-400"><%= trade.entry_time&.strftime("%b %-d, %Y %H:%M") %></td>
+            <td class="px-4 py-3 text-slate-400"><%= trade.exit_time&.strftime("%b %-d, %Y %H:%M") %></td>
+            <td class="px-4 py-3 text-slate-300"><%= trade.entry_price %></td>
+            <td class="px-4 py-3 text-slate-300"><%= trade.exit_price %></td>
+            <td class="px-4 py-3 font-semibold <%= trade.net_pnl.to_d >= 0 ? 'text-emerald-300' : 'text-red-300' %>">
+              $<%= trade.net_pnl %>
+            </td>
+            <td class="px-4 py-3">
+              <span class="rounded-full px-3 py-1 text-xs font-medium <%= trade.status == 'win' ? 'bg-emerald-400/10 text-emerald-300' : trade.status == 'loss' ? 'bg-red-400/10 text-red-300' : 'bg-slate-400/10 text-slate-300' %>">
+                <%= trade.status %>
+              </span>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>

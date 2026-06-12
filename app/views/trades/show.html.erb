@@ -1,26 +1,125 @@
-<h1>Trade Details</h1>
+<section class="mb-8">
+  <p class="text-sm text-cyan-300">Trade details</p>
+  <h1 class="mt-2 text-4xl font-bold tracking-tight text-white">
+    <%= @trade.symbol %> · <%= @trade.side&.capitalize %>
+  </h1>
+  <p class="mt-3 max-w-2xl text-slate-400">
+    Detailed information for this imported trade.
+  </p>
+</section>
 
-<p>
-  <%= link_to "Back to All Trades", trades_path %>
-</p>
+<section class="mb-8 grid gap-4 md:grid-cols-4">
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+    <p class="text-sm text-slate-400">Net P/L</p>
+    <p class="mt-2 text-3xl font-bold <%= @trade.net_pnl.to_d >= 0 ? 'text-emerald-300' : 'text-red-300' %>">
+      $<%= @trade.net_pnl %>
+    </p>
+  </div>
 
-<p><strong>Symbol:</strong> <%= @trade.symbol %></p>
-<p><strong>Side:</strong> <%= @trade.side %></p>
-<p><strong>Quantity:</strong> <%= @trade.quantity %></p>
-<p><strong>Entry Time:</strong> <%= @trade.entry_time %></p>
-<p><strong>Exit Time:</strong> <%= @trade.exit_time %></p>
-<p><strong>Entry Price:</strong> <%= @trade.entry_price %></p>
-<p><strong>Exit Price:</strong> <%= @trade.exit_price %></p>
-<p><strong>Gross P/L:</strong> <%= @trade.gross_pnl %></p>
-<p><strong>Fees:</strong> <%= @trade.fees %></p>
-<p><strong>Net P/L:</strong> <%= @trade.net_pnl %></p>
-<p><strong>Status:</strong> <%= @trade.status %></p>
-<p><strong>Duration Seconds:</strong> <%= @trade.duration_seconds %></p>
-<p><strong>Buy Fill ID:</strong> <%= @trade.buy_fill_id %></p>
-<p><strong>Sell Fill ID:</strong> <%= @trade.sell_fill_id %></p>
-<p><strong>Tick Size:</strong> <%= @trade.tick_size %></p>
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+    <p class="text-sm text-slate-400">Status</p>
+    <p class="mt-3">
+      <span class="rounded-full px-3 py-1 text-sm font-medium <%= @trade.status == 'win' ? 'bg-emerald-400/10 text-emerald-300' : @trade.status == 'loss' ? 'bg-red-400/10 text-red-300' : 'bg-slate-400/10 text-slate-300' %>">
+        <%= @trade.status %>
+      </span>
+    </p>
+  </div>
 
-<p>
-  <strong>Import:</strong>
-  <%= link_to "View Import", import_path(@trade.import) %>
-</p>
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+    <p class="text-sm text-slate-400">Quantity</p>
+    <p class="mt-2 text-3xl font-bold text-white"><%= @trade.quantity %></p>
+  </div>
+
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+    <p class="text-sm text-slate-400">Duration</p>
+    <p class="mt-2 text-3xl font-bold text-white"><%= @trade.duration_seconds %>s</p>
+  </div>
+</section>
+
+<section class="grid gap-8 xl:grid-cols-2">
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+    <h2 class="mb-5 text-xl font-semibold text-white">Execution</h2>
+
+    <dl class="space-y-4">
+      <div class="flex justify-between gap-4 border-b border-white/10 pb-3">
+        <dt class="text-slate-400">Symbol</dt>
+        <dd class="font-medium text-white"><%= @trade.symbol %></dd>
+      </div>
+
+      <div class="flex justify-between gap-4 border-b border-white/10 pb-3">
+        <dt class="text-slate-400">Side</dt>
+        <dd class="font-medium text-white"><%= @trade.side %></dd>
+      </div>
+
+      <div class="flex justify-between gap-4 border-b border-white/10 pb-3">
+        <dt class="text-slate-400">Entry Time</dt>
+        <dd class="font-medium text-white"><%= @trade.entry_time&.strftime("%b %-d, %Y %H:%M:%S") %></dd>
+      </div>
+
+      <div class="flex justify-between gap-4 border-b border-white/10 pb-3">
+        <dt class="text-slate-400">Exit Time</dt>
+        <dd class="font-medium text-white"><%= @trade.exit_time&.strftime("%b %-d, %Y %H:%M:%S") %></dd>
+      </div>
+
+      <div class="flex justify-between gap-4 border-b border-white/10 pb-3">
+        <dt class="text-slate-400">Entry Price</dt>
+        <dd class="font-medium text-white"><%= @trade.entry_price %></dd>
+      </div>
+
+      <div class="flex justify-between gap-4">
+        <dt class="text-slate-400">Exit Price</dt>
+        <dd class="font-medium text-white"><%= @trade.exit_price %></dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+    <h2 class="mb-5 text-xl font-semibold text-white">Import Metadata</h2>
+
+    <dl class="space-y-4">
+      <div class="flex justify-between gap-4 border-b border-white/10 pb-3">
+        <dt class="text-slate-400">Gross P/L</dt>
+        <dd class="font-medium text-white">$<%= @trade.gross_pnl %></dd>
+      </div>
+
+      <div class="flex justify-between gap-4 border-b border-white/10 pb-3">
+        <dt class="text-slate-400">Fees</dt>
+        <dd class="font-medium text-white">$<%= @trade.fees %></dd>
+      </div>
+
+      <div class="flex justify-between gap-4 border-b border-white/10 pb-3">
+        <dt class="text-slate-400">Buy Fill ID</dt>
+        <dd class="font-mono text-sm text-slate-300"><%= @trade.buy_fill_id %></dd>
+      </div>
+
+      <div class="flex justify-between gap-4 border-b border-white/10 pb-3">
+        <dt class="text-slate-400">Sell Fill ID</dt>
+        <dd class="font-mono text-sm text-slate-300"><%= @trade.sell_fill_id %></dd>
+      </div>
+
+      <div class="flex justify-between gap-4 border-b border-white/10 pb-3">
+        <dt class="text-slate-400">Tick Size</dt>
+        <dd class="font-medium text-white"><%= @trade.tick_size %></dd>
+      </div>
+
+      <div class="flex justify-between gap-4">
+        <dt class="text-slate-400">Import</dt>
+        <dd>
+          <%= link_to "View Import",
+                      import_path(@trade.import),
+                      class: "text-cyan-300 hover:text-cyan-200" %>
+        </dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<section class="mt-8 flex gap-3">
+  <%= link_to "Back to All Trades",
+              trades_path,
+              class: "rounded-full border border-white/10 px-5 py-2.5 font-medium text-slate-300 hover:bg-white/10 hover:text-white" %>
+
+  <%= link_to "Dashboard",
+              root_path,
+              class: "rounded-full bg-cyan-400 px-5 py-2.5 font-medium text-slate-950 hover:bg-cyan-300" %>
+</section>

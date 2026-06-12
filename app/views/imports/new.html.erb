@@ -1,34 +1,48 @@
-<h1>Upload Trade File</h1>
+<section class="mb-8">
+  <p class="text-sm text-cyan-300">Import trades</p>
+  <h1 class="mt-2 text-4xl font-bold tracking-tight text-white">Upload Trade File</h1>
+  <p class="mt-3 max-w-2xl text-slate-400">
+    Upload a Tradovate CSV file and Trade Tracker will parse your trades into your dashboard.
+  </p>
+</section>
 
-<%= form_with model: @import, local: true do |form| %>
-  <% if @import.errors.any? %>
+<section class="max-w-2xl rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+  <%= form_with model: @import, local: true, class: "space-y-6" do |form| %>
+    <% if @import.errors.any? %>
+      <div class="rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-red-200">
+        <h2 class="font-semibold">Please fix these errors:</h2>
+        <ul class="mt-2 list-inside list-disc text-sm">
+          <% @import.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
     <div>
-      <h2>Errors:</h2>
-      <ul>
-        <% @import.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+      <%= form.label :source_platform, "Source Platform", class: "block text-sm font-medium text-slate-300" %>
+      <%= form.select :source_platform,
+                      ["Tradovate", "Manual CSV"],
+                      {},
+                      class: "mt-2 w-full rounded-2xl border border-white/10 bg-slate-900/80 px-4 py-3 text-slate-100 outline-none ring-cyan-400/30 focus:ring-4" %>
+    </div>
+
+    <div>
+      <%= form.label :file, "CSV File", class: "block text-sm font-medium text-slate-300" %>
+      <%= form.file_field :file,
+                          class: "mt-2 w-full rounded-2xl border border-white/10 bg-slate-900/80 px-4 py-3 text-slate-300 file:mr-4 file:rounded-full file:border-0 file:bg-cyan-400 file:px-4 file:py-2 file:font-medium file:text-slate-950 hover:file:bg-cyan-300" %>
+      <p class="mt-2 text-xs text-slate-500">
+        Supported now: Tradovate performance CSV exports.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <%= form.submit "Upload and Parse",
+                      class: "rounded-full bg-cyan-400 px-6 py-3 font-medium text-slate-950 hover:bg-cyan-300" %>
+
+      <%= link_to "Cancel",
+                  root_path,
+                  class: "rounded-full border border-white/10 px-6 py-3 font-medium text-slate-300 hover:bg-white/10 hover:text-white" %>
     </div>
   <% end %>
-
-  <div>
-    <%= form.label :source_platform, "Source Platform" %>
-    <%= form.select :source_platform, ["Tradovate", "Manual CSV"] %>
-  </div>
-
-  <br>
-
-  <div>
-    <%= form.label :file, "CSV File" %>
-    <%= form.file_field :file %>
-  </div>
-
-  <br>
-
-  <%= form.submit "Upload" %>
-<% end %>
-
-<p>
-  <%= link_to "Back to Dashboard", root_path %>
-</p>
+</section>
