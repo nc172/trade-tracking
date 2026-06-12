@@ -6,22 +6,25 @@
   </p>
 </section>
 
-<section class="mb-8 grid gap-4 md:grid-cols-3">
+<section class="mb-8 grid gap-4 md:grid-cols-4">
   <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
-    <p class="text-sm text-slate-400">Platform</p>
-    <p class="mt-2 text-xl font-semibold text-white"><%= @import.source_platform %></p>
+    <p class="text-sm text-slate-400">Processed Rows</p>
+    <p class="mt-2 text-xl font-semibold text-white"><%= @import.processed_rows %></p>
   </div>
 
   <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
-    <p class="text-sm text-slate-400">Status</p>
-    <p class="mt-2 text-xl font-semibold <%= @import.status == 'completed' ? 'text-emerald-300' : @import.status == 'failed' ? 'text-red-300' : 'text-yellow-300' %>">
-      <%= @import.status %>
-    </p>
+    <p class="text-sm text-slate-400">Created Trades</p>
+    <p class="mt-2 text-xl font-semibold text-emerald-300"><%= @import.created_trades_count %></p>
   </div>
 
   <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
-    <p class="text-sm text-slate-400">Trades Created</p>
-    <p class="mt-2 text-xl font-semibold text-white"><%= @import.trades.count %></p>
+    <p class="text-sm text-slate-400">Skipped Duplicates</p>
+    <p class="mt-2 text-xl font-semibold text-yellow-300"><%= @import.skipped_duplicates_count %></p>
+  </div>
+
+  <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+    <p class="text-sm text-slate-400">Failed Rows</p>
+    <p class="mt-2 text-xl font-semibold text-red-300"><%= @import.failed_rows_count %></p>
   </div>
 </section>
 

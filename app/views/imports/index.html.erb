@@ -41,14 +41,17 @@
     <div class="overflow-x-auto">
       <table class="w-full min-w-[900px] text-left text-sm">
         <thead class="border-b border-white/10 text-slate-400">
-          <tr>
-            <th class="px-4 py-3">File</th>
-            <th class="px-4 py-3">Platform</th>
-            <th class="px-4 py-3">Status</th>
-            <th class="px-4 py-3">Trades</th>
-            <th class="px-4 py-3">Uploaded</th>
-            <th class="px-4 py-3">Details</th>
-          </tr>
+            <tr>
+                <th class="px-4 py-3">File</th>
+                <th class="px-4 py-3">Platform</th>
+                <th class="px-4 py-3">Status</th>
+                <th class="px-4 py-3">Processed</th>
+                <th class="px-4 py-3">Created</th>
+                <th class="px-4 py-3">Skipped</th>
+                <th class="px-4 py-3">Failed</th>
+                <th class="px-4 py-3">Uploaded</th>
+                <th class="px-4 py-3">Details</th>
+            </tr>
         </thead>
 
         <tbody class="divide-y divide-white/10">
@@ -70,23 +73,35 @@
                 <span class="rounded-full px-3 py-1 text-xs font-medium <%= import.status == 'completed' ? 'bg-emerald-400/10 text-emerald-300' : import.status == 'failed' ? 'bg-red-400/10 text-red-300' : 'bg-yellow-400/10 text-yellow-300' %>">
                   <%= import.status %>
                 </span>
-              </td>
+            </td>
 
-              <td class="px-4 py-3 text-slate-300">
-                <%= import.trades.count %>
-              </td>
+            <td class="px-4 py-3 text-slate-300">
+                <%= import.processed_rows %>
+            </td>
 
-              <td class="px-4 py-3 text-slate-400">
+            <td class="px-4 py-3 text-emerald-300">
+                <%= import.created_trades_count %>
+            </td>
+
+            <td class="px-4 py-3 text-yellow-300">
+                <%= import.skipped_duplicates_count %>
+            </td>
+
+            <td class="px-4 py-3 text-red-300">
+                <%= import.failed_rows_count %>
+            </td>
+
+            <td class="px-4 py-3 text-slate-400">
                 <%= import.created_at.strftime("%b %-d, %Y %H:%M") %>
-              </td>
+            </td>
 
-              <td class="px-4 py-3">
+            <td class="px-4 py-3">
                 <%= link_to "View",
                             import_path(import),
                             class: "text-cyan-300 hover:text-cyan-200" %>
-              </td>
+            </td>
             </tr>
-          <% end %>
+        <% end %>
         </tbody>
       </table>
     </div>

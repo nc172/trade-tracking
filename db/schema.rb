@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_12_010029) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_12_021650) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -44,7 +44,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_010029) do
 
   create_table "imports", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.integer "created_trades_count", default: 0, null: false
     t.text "error_message"
+    t.integer "failed_rows_count", default: 0, null: false
+    t.integer "processed_rows", default: 0, null: false
+    t.integer "skipped_duplicates_count", default: 0, null: false
     t.string "source_platform"
     t.string "status"
     t.datetime "updated_at", null: false

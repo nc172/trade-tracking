@@ -5,6 +5,10 @@ module Imports
     def initialize(import)
       @import = import
       @user = import.user
+      @processed_rows = 0
+      @created_trades_count = 0
+      @skipped_duplicates_count = 0
+      @failed_rows_count = 0
     end
 
     def call
@@ -12,13 +16,31 @@ module Imports
 
       @import.file.open do |file|
         CSV.foreach(file.path, headers: true) do |row|
+          @processed_rows += 1
           create_trade_from_row(row)
+        rescue StandardError
+          @failed_rows_count += 1
         end
       end
 
-      @import.update!(status: "completed", error_message: nil)
+      @import.update!(
+        status: "completed",
+        error_message: nil,
+        processed_rows: @processed_rows,
+        created_trades_count: @created_trades_count,
+        skipped_duplicates_count: @skipped_duplicates_count,
+        failed_rows_count: @failed_rows_count
+      )
     rescue StandardError => e
-      @import.update!(status: "failed", error_message: e.message)
+      @import.update!(
+        status: "failed",
+        error_message: e.message,
+        processed_rows: @processed_rows,
+        created_trades_count: @created_trades_count,
+        skipped_duplicates_count: @skipped_duplicates_count,
+        failed_rows_count: @failed_rows_count
+      )
+
       raise e
     end
 
@@ -38,26 +60,36 @@ module Imports
 
       net_pnl = parse_money(row["pnl"])
 
-      Trade.find_or_create_by!(
+      trade = Trade.find_or_initialize_by(
         user: @user,
         buy_fill_id: row["buyFillId"],
         sell_fill_id: row["sellFillId"]
-      ) do |trade|
-        trade.import = @import
-        trade.symbol = row["symbol"]
-        trade.side = side
-        trade.quantity = row["qty"].to_i
-        trade.entry_time = entry_time
-        trade.exit_time = exit_time
-        trade.entry_price = entry_price
-        trade.exit_price = exit_price
-        trade.gross_pnl = net_pnl
-        trade.fees = 0
-        trade.net_pnl = net_pnl
-        trade.status = trade_status(net_pnl)
-        trade.duration_seconds = parse_duration(row["duration"])
-        trade.tick_size = row["_tickSize"]
+      )
+
+      if trade.persisted?
+        @skipped_duplicates_count += 1
+        return trade
       end
+
+      trade.import = @import
+      trade.symbol = row["symbol"]
+      trade.side = side
+      trade.quantity = row["qty"].to_i
+      trade.entry_time = entry_time
+      trade.exit_time = exit_time
+      trade.entry_price = entry_price
+      trade.exit_price = exit_price
+      trade.gross_pnl = net_pnl
+      trade.fees = 0
+      trade.net_pnl = net_pnl
+      trade.status = trade_status(net_pnl)
+      trade.duration_seconds = parse_duration(row["duration"])
+      trade.tick_size = row["_tickSize"]
+
+      trade.save!
+      @created_trades_count += 1
+
+      trade
     end
 
     def parse_money(value)
