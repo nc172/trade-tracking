@@ -2,7 +2,7 @@ class DashboardController < ApplicationController
   def index
     return unless user_signed_in?
 
-    @trades = current_user.trades
+    @trades = current_user.trades.order(exit_time: :asc)
 
     @total_trades = @trades.count
     @net_pnl = @trades.sum(:net_pnl)
@@ -43,5 +43,23 @@ class DashboardController < ApplicationController
       else
         0
       end
+
+    @equity_curve = build_equity_curve(@trades)
+    @daily_pnl = current_user.trades.group_by_day(:exit_time).sum(:net_pnl)
+    @win_loss_chart = {
+      "Wins" => @win_count,
+      "Losses" => @loss_count
+    }
+  end
+
+  private
+
+  def build_equity_curve(trades)
+    cumulative_pnl = 0
+
+    trades.map do |trade|
+      cumulative_pnl += trade.net_pnl.to_d
+      [trade.exit_time, cumulative_pnl]
+    end
   end
 end

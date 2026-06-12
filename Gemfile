@@ -70,3 +70,6 @@ end
 gem "devise", "~> 5.0"
 
 gem "csv", "~> 3.3"
+
+gem "chartkick", "~> 5.2"
+gem "groupdate", "~> 6.8"

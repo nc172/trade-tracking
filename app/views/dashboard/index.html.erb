@@ -55,6 +55,27 @@
     </tbody>
   </table>
 
+  <h2>Equity Curve</h2>
+  <% if @equity_curve.any? %>
+    <%= line_chart @equity_curve, xtitle: "Trade Time", ytitle: "Cumulative P/L" %>
+  <% else %>
+    <p>No trade data yet.</p>
+  <% end %>
+
+  <h2>Daily P/L</h2>
+  <% if @daily_pnl.any? %>
+    <%= column_chart @daily_pnl, xtitle: "Day", ytitle: "Net P/L" %>
+  <% else %>
+    <p>No daily P/L data yet.</p>
+  <% end %>
+
+  <h2>Wins vs Losses</h2>
+  <% if @total_trades.positive? %>
+    <%= pie_chart @win_loss_chart %>
+  <% else %>
+    <p>No win/loss data yet.</p>
+  <% end %>
+
   <br>
 
   <%= button_to "Log out", destroy_user_session_path, method: :delete %>
