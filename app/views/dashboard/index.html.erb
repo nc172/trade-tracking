@@ -3,13 +3,59 @@
 <% if user_signed_in? %>
   <p>Welcome, <%= current_user.email %>.</p>
 
-  <p>This dashboard will show your trading stats after you upload trades.</p>
-
   <p>
     <%= link_to "Upload CSV", new_import_path %>
     |
     <%= link_to "View All Trades", trades_path %>
   </p>
+
+  <h2>Performance Summary</h2>
+
+  <table border="1" cellpadding="8">
+    <tbody>
+      <tr>
+        <th>Total Trades</th>
+        <td><%= @total_trades %></td>
+      </tr>
+
+      <tr>
+        <th>Net P/L</th>
+        <td>$<%= @net_pnl.round(2) %></td>
+      </tr>
+
+      <tr>
+        <th>Wins</th>
+        <td><%= @win_count %></td>
+      </tr>
+
+      <tr>
+        <th>Losses</th>
+        <td><%= @loss_count %></td>
+      </tr>
+
+      <tr>
+        <th>Win Rate</th>
+        <td><%= @win_rate %>%</td>
+      </tr>
+
+      <tr>
+        <th>Average Win</th>
+        <td>$<%= @average_win %></td>
+      </tr>
+
+      <tr>
+        <th>Average Loss</th>
+        <td>$<%= @average_loss %></td>
+      </tr>
+
+      <tr>
+        <th>Profit Factor</th>
+        <td><%= @profit_factor %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <br>
 
   <%= button_to "Log out", destroy_user_session_path, method: :delete %>
 <% else %>
