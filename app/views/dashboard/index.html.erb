@@ -1,90 +1,104 @@
-<h1>Trade Tracker Dashboard</h1>
-
 <% if user_signed_in? %>
-  <p>Welcome, <%= current_user.email %>.</p>
+  <section class="mb-8">
+    <p class="text-sm text-cyan-300">Welcome back, <%= current_user.email %></p>
+    <h1 class="mt-2 text-4xl font-bold tracking-tight text-white">Trading Dashboard</h1>
+    <p class="mt-3 max-w-2xl text-slate-400">
+      Track your imported trades, monitor your equity curve, and review your trading performance.
+    </p>
+  </section>
 
-  <p>
-    <%= link_to "Upload CSV", new_import_path %>
-    |
-    <%= link_to "View All Trades", trades_path %>
-  </p>
+  <section class="mb-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+      <p class="text-sm text-slate-400">Total Trades</p>
+      <p class="mt-2 text-3xl font-bold text-white"><%= @total_trades %></p>
+    </div>
 
-  <h2>Performance Summary</h2>
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+      <p class="text-sm text-slate-400">Net P/L</p>
+      <p class="mt-2 text-3xl font-bold <%= @net_pnl.to_d >= 0 ? 'text-emerald-300' : 'text-red-300' %>">
+        $<%= @net_pnl.round(2) %>
+      </p>
+    </div>
 
-  <table border="1" cellpadding="8">
-    <tbody>
-      <tr>
-        <th>Total Trades</th>
-        <td><%= @total_trades %></td>
-      </tr>
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+      <p class="text-sm text-slate-400">Win Rate</p>
+      <p class="mt-2 text-3xl font-bold text-white"><%= @win_rate %>%</p>
+      <p class="mt-1 text-sm text-slate-500"><%= @win_count %> wins / <%= @loss_count %> losses</p>
+    </div>
 
-      <tr>
-        <th>Net P/L</th>
-        <td>$<%= @net_pnl.round(2) %></td>
-      </tr>
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+      <p class="text-sm text-slate-400">Profit Factor</p>
+      <p class="mt-2 text-3xl font-bold text-white"><%= @profit_factor %></p>
+    </div>
+  </section>
 
-      <tr>
-        <th>Wins</th>
-        <td><%= @win_count %></td>
-      </tr>
+  <section class="mb-8 grid gap-4 md:grid-cols-2">
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+      <p class="text-sm text-slate-400">Average Win</p>
+      <p class="mt-2 text-2xl font-semibold text-emerald-300">$<%= @average_win %></p>
+    </div>
 
-      <tr>
-        <th>Losses</th>
-        <td><%= @loss_count %></td>
-      </tr>
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-5 shadow-2xl backdrop-blur-xl">
+      <p class="text-sm text-slate-400">Average Loss</p>
+      <p class="mt-2 text-2xl font-semibold text-red-300">$<%= @average_loss %></p>
+    </div>
+  </section>
 
-      <tr>
-        <th>Win Rate</th>
-        <td><%= @win_rate %>%</td>
-      </tr>
+  <section class="mb-8 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+    <div class="mb-4">
+      <h2 class="text-xl font-semibold text-white">Equity Curve</h2>
+      <p class="text-sm text-slate-400">Cumulative profit and loss over time.</p>
+    </div>
 
-      <tr>
-        <th>Average Win</th>
-        <td>$<%= @average_win %></td>
-      </tr>
+    <% if @equity_curve.any? %>
+      <%= line_chart @equity_curve, xtitle: "Trade Time", ytitle: "Cumulative P/L", height: "360px" %>
+    <% else %>
+      <p class="text-slate-400">No trade data yet.</p>
+    <% end %>
+  </section>
 
-      <tr>
-        <th>Average Loss</th>
-        <td>$<%= @average_loss %></td>
-      </tr>
+  <section class="grid gap-8 xl:grid-cols-2">
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+      <div class="mb-4">
+        <h2 class="text-xl font-semibold text-white">Daily P/L</h2>
+        <p class="text-sm text-slate-400">Net result grouped by trading day.</p>
+      </div>
 
-      <tr>
-        <th>Profit Factor</th>
-        <td><%= @profit_factor %></td>
-      </tr>
-    </tbody>
-  </table>
+      <% if @daily_pnl.any? %>
+        <%= column_chart @daily_pnl, xtitle: "Day", ytitle: "Net P/L", height: "320px" %>
+      <% else %>
+        <p class="text-slate-400">No daily P/L data yet.</p>
+      <% end %>
+    </div>
 
-  <h2>Equity Curve</h2>
-  <% if @equity_curve.any? %>
-    <%= line_chart @equity_curve, xtitle: "Trade Time", ytitle: "Cumulative P/L" %>
-  <% else %>
-    <p>No trade data yet.</p>
-  <% end %>
+    <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+      <div class="mb-4">
+        <h2 class="text-xl font-semibold text-white">Wins vs Losses</h2>
+        <p class="text-sm text-slate-400">Distribution of winning and losing trades.</p>
+      </div>
 
-  <h2>Daily P/L</h2>
-  <% if @daily_pnl.any? %>
-    <%= column_chart @daily_pnl, xtitle: "Day", ytitle: "Net P/L" %>
-  <% else %>
-    <p>No daily P/L data yet.</p>
-  <% end %>
-
-  <h2>Wins vs Losses</h2>
-  <% if @total_trades.positive? %>
-    <%= pie_chart @win_loss_chart %>
-  <% else %>
-    <p>No win/loss data yet.</p>
-  <% end %>
-
-  <br>
-
-  <%= button_to "Log out", destroy_user_session_path, method: :delete %>
+      <% if @total_trades.positive? %>
+        <%= pie_chart @win_loss_chart, height: "320px" %>
+      <% else %>
+        <p class="text-slate-400">No win/loss data yet.</p>
+      <% end %>
+    </div>
+  </section>
 <% else %>
-  <p>Upload trading CSV files, track your performance, and analyze your edge.</p>
+  <section class="flex min-h-[70vh] items-center">
+    <div class="max-w-3xl">
+      <p class="text-sm font-medium text-cyan-300">Trading analytics made simple</p>
+      <h1 class="mt-4 text-5xl font-bold tracking-tight text-white">
+        Turn your trade reports into performance insight.
+      </h1>
+      <p class="mt-5 text-lg text-slate-400">
+        Upload CSV files, parse your trades, and analyze win rate, equity curve, daily P/L, and more.
+      </p>
 
-  <p>
-    <%= link_to "Sign up", new_user_registration_path %>
-    |
-    <%= link_to "Log in", new_user_session_path %>
-  </p>
+      <div class="mt-8 flex gap-3">
+        <%= link_to "Get started", new_user_registration_path, class: "rounded-full bg-cyan-400 px-6 py-3 font-medium text-slate-950 hover:bg-cyan-300" %>
+        <%= link_to "Log in", new_user_session_path, class: "rounded-full border border-white/10 px-6 py-3 font-medium text-slate-200 hover:bg-white/10" %>
+      </div>
+    </div>
+  </section>
 <% end %>
