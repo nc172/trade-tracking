@@ -4,5 +4,5 @@ Rails.application.routes.draw do
   root "dashboard#index"
 
   resources :imports, only: [:index, :new, :create, :show]
-  resources :trades, only: [:index, :show]
+  resources :trades, only: [:index, :show, :update]
 end

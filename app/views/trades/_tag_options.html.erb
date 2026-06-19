@@ -1,0 +1,17 @@
+<div>
+  <p class="mb-3 text-sm font-medium text-slate-300"><%= label %></p>
+
+  <div class="flex flex-wrap gap-2">
+    <% options.each do |value, text| %>
+      <label class="cursor-pointer">
+        <%= form.radio_button field,
+                              value,
+                              class: "peer sr-only" %>
+
+        <span class="inline-flex rounded-full border border-white/10 bg-slate-900/70 px-4 py-2 text-sm font-medium text-slate-300 transition peer-checked:border-cyan-300 peer-checked:bg-cyan-400 peer-checked:text-slate-950 hover:bg-white/10 hover:text-white">
+          <%= text %>
+        </span>
+      </label>
+    <% end %>
+  </div>
+</div>

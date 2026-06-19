@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_06_12_021650) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_19_024056) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -58,8 +58,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_021650) do
 
   create_table "trades", force: :cascade do |t|
     t.string "buy_fill_id"
+    t.integer "confidence_rating"
     t.datetime "created_at", null: false
     t.integer "duration_seconds"
+    t.string "emotion"
     t.decimal "entry_price"
     t.datetime "entry_time"
     t.decimal "exit_price"
@@ -67,9 +69,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_06_12_021650) do
     t.decimal "fees"
     t.decimal "gross_pnl"
     t.bigint "import_id", null: false
+    t.string "mistake_type"
     t.decimal "net_pnl"
+    t.string "plan_adherence"
     t.integer "quantity"
+    t.text "review_note"
     t.string "sell_fill_id"
+    t.string "setup_type"
     t.string "side"
     t.string "status"
     t.string "symbol"

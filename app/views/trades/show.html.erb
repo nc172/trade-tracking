@@ -114,6 +114,131 @@
   </div>
 </section>
 
+<section class="mt-8 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+  <div class="mb-5">
+    <p class="text-sm text-cyan-300">Saved review</p>
+    <h2 class="mt-1 text-xl font-semibold text-white">Current Review</h2>
+  </div>
+
+  <div class="grid gap-4 md:grid-cols-5">
+    <div>
+      <p class="text-xs text-slate-500">Setup</p>
+      <p class="mt-1 text-sm font-medium text-white"><%= @trade.setup_type_label || "Not set" %></p>
+    </div>
+
+    <div>
+      <p class="text-xs text-slate-500">Mistake</p>
+      <p class="mt-1 text-sm font-medium text-white"><%= @trade.mistake_type_label || "Not set" %></p>
+    </div>
+
+    <div>
+      <p class="text-xs text-slate-500">Emotion</p>
+      <p class="mt-1 text-sm font-medium text-white"><%= @trade.emotion_label || "Not set" %></p>
+    </div>
+
+    <div>
+      <p class="text-xs text-slate-500">Plan</p>
+      <p class="mt-1 text-sm font-medium text-white"><%= @trade.plan_adherence_label || "Not set" %></p>
+    </div>
+
+    <div>
+      <p class="text-xs text-slate-500">Confidence</p>
+      <p class="mt-1 text-sm font-medium text-white">
+        <%= @trade.confidence_rating.present? ? "#{@trade.confidence_rating}/5" : "Not set" %>
+      </p>
+    </div>
+  </div>
+
+  <% if @trade.review_note.present? %>
+    <div class="mt-5 rounded-2xl border border-white/10 bg-slate-900/60 p-4">
+      <p class="text-xs text-slate-500">Notes</p>
+      <p class="mt-2 whitespace-pre-wrap text-sm text-slate-300"><%= @trade.review_note %></p>
+    </div>
+  <% end %>
+</section>
+
+<section class="mt-8 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
+  <div class="mb-6">
+    <p class="text-sm text-cyan-300">Guided review</p>
+    <h2 class="mt-1 text-2xl font-semibold text-white">Review This Trade</h2>
+    <p class="mt-2 text-sm text-slate-400">
+      Use guided tags to make journaling faster and easier to analyze later.
+    </p>
+  </div>
+
+  <%= form_with model: @trade, local: true, class: "space-y-8" do |form| %>
+    <% if @trade.errors.any? %>
+      <div class="rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-red-200">
+        <p class="font-semibold">Please fix these errors:</p>
+        <ul class="mt-2 list-inside list-disc text-sm">
+          <% @trade.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= render "tag_options",
+               form: form,
+               field: :setup_type,
+               label: "Setup",
+               options: Trade::SETUP_TYPES %>
+
+    <%= render "tag_options",
+               form: form,
+               field: :mistake_type,
+               label: "Mistake",
+               options: Trade::MISTAKE_TYPES %>
+
+    <%= render "tag_options",
+               form: form,
+               field: :emotion,
+               label: "Emotion",
+               options: Trade::EMOTIONS %>
+
+    <%= render "tag_options",
+               form: form,
+               field: :plan_adherence,
+               label: "Plan Adherence",
+               options: Trade::PLAN_ADHERENCE_OPTIONS %>
+
+    <div>
+      <p class="mb-3 text-sm font-medium text-slate-300">Confidence Rating</p>
+
+      <div class="flex flex-wrap gap-2">
+        <% (1..5).each do |rating| %>
+          <label class="cursor-pointer">
+            <%= form.radio_button :confidence_rating,
+                                  rating,
+                                  class: "peer sr-only" %>
+
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-slate-900/70 text-sm font-semibold text-slate-300 transition peer-checked:border-cyan-300 peer-checked:bg-cyan-400 peer-checked:text-slate-950 hover:bg-white/10 hover:text-white">
+              <%= rating %>
+            </span>
+          </label>
+        <% end %>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :review_note, "Additional Notes", class: "mb-3 block text-sm font-medium text-slate-300" %>
+      <%= form.text_area :review_note,
+                         rows: 5,
+                         placeholder: "What happened on this trade? What did you do well? What would you improve?",
+                         class: "w-full rounded-2xl border border-white/10 bg-slate-900/80 px-4 py-3 text-slate-100 outline-none ring-cyan-400/30 placeholder:text-slate-600 focus:ring-4" %>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <%= form.submit "Save Review",
+                      class: "rounded-full bg-cyan-400 px-6 py-3 font-medium text-slate-950 hover:bg-cyan-300" %>
+
+      <%= link_to "Back to All Trades",
+                  trades_path,
+                  class: "rounded-full border border-white/10 px-6 py-3 font-medium text-slate-300 hover:bg-white/10 hover:text-white" %>
+    </div>
+  <% end %>
+</section>
+
 <section class="mt-8 flex gap-3">
   <%= link_to "Back to All Trades",
               trades_path,
