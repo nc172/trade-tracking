@@ -2,7 +2,10 @@ class DashboardController < ApplicationController
   def index
     return unless user_signed_in?
 
-    @trades = current_user.trades.order(exit_time: :asc)
+    @selected_range = params[:range].presence || "30d"
+
+    @all_trades = current_user.trades
+    @trades = filtered_trades(@all_trades, @selected_range)
 
     @total_trades = @trades.count
     @net_pnl = @trades.sum(:net_pnl)
@@ -44,8 +47,8 @@ class DashboardController < ApplicationController
         0
       end
 
-    @equity_curve = build_equity_curve(@trades)
-    @daily_pnl = current_user.trades.group_by_day(:exit_time).sum(:net_pnl)
+    @equity_curve = build_daily_equity_curve(@trades)
+    @daily_pnl = @trades.group_by_day(:exit_time).sum(:net_pnl)
     @win_loss_chart = {
       "Wins" => @win_count,
       "Losses" => @loss_count
@@ -54,12 +57,29 @@ class DashboardController < ApplicationController
 
   private
 
-  def build_equity_curve(trades)
+  def filtered_trades(trades, selected_range)
+    case selected_range
+    when "7d"
+      trades.where("exit_time >= ?", 7.days.ago.beginning_of_day)
+    when "30d"
+      trades.where("exit_time >= ?", 30.days.ago.beginning_of_day)
+    when "1y"
+      trades.where("exit_time >= ?", 1.year.ago.beginning_of_day)
+    when "all"
+      trades
+    else
+      trades.where("exit_time >= ?", 30.days.ago.beginning_of_day)
+    end
+  end
+
+  def build_daily_equity_curve(trades)
+    daily_pnl = trades.group_by_day(:exit_time).sum(:net_pnl)
+
     cumulative_pnl = 0
 
-    trades.map do |trade|
-      cumulative_pnl += trade.net_pnl.to_d
-      [trade.exit_time, cumulative_pnl]
+    daily_pnl.map do |day, pnl|
+      cumulative_pnl += pnl.to_d
+      [day, cumulative_pnl]
     end
   end
 end

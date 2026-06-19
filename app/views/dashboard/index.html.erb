@@ -1,10 +1,28 @@
 <% if user_signed_in? %>
   <section class="mb-8">
     <p class="text-sm text-cyan-300">Welcome back, <%= current_user.email %></p>
-    <h1 class="mt-2 text-4xl font-bold tracking-tight text-white">Trading Dashboard</h1>
-    <p class="mt-3 max-w-2xl text-slate-400">
-      Track your imported trades, monitor your equity curve, and review your trading performance.
-    </p>
+
+    <div class="mt-2 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <h1 class="text-4xl font-bold tracking-tight text-white">Trading Dashboard</h1>
+        <p class="mt-3 max-w-2xl text-slate-400">
+          Track your imported trades, monitor your equity curve, and review your trading performance.
+        </p>
+      </div>
+
+      <div class="rounded-full border border-white/10 bg-white/5 p-1 backdrop-blur-xl">
+        <% [
+          ["7D", "7d"],
+          ["30D", "30d"],
+          ["1Y", "1y"],
+          ["All", "all"]
+        ].each do |label, value| %>
+          <%= link_to label,
+                      root_path(range: value),
+                      class: "inline-flex rounded-full px-4 py-2 text-sm font-medium #{ @selected_range == value ? 'bg-cyan-400 text-slate-950' : 'text-slate-300 hover:bg-white/10 hover:text-white' }" %>
+        <% end %>
+      </div>
+    </div>
   </section>
 
   <section class="mb-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -47,7 +65,7 @@
   <section class="mb-8 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
     <div class="mb-4">
       <h2 class="text-xl font-semibold text-white">Equity Curve</h2>
-      <p class="text-sm text-slate-400">Cumulative profit and loss over time.</p>
+      <p class="text-sm text-slate-400">Cumulative daily profit and loss for the selected range.</p>
     </div>
 
     <% if @equity_curve.any? %>
@@ -61,7 +79,7 @@
     <div class="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl">
       <div class="mb-4">
         <h2 class="text-xl font-semibold text-white">Daily P/L</h2>
-        <p class="text-sm text-slate-400">Net result grouped by trading day.</p>
+        <p class="text-sm text-slate-400">Daily net result for the selected range.</p>
       </div>
 
       <% if @daily_pnl.any? %>
