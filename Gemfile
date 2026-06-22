@@ -74,4 +74,4 @@ gem "csv", "~> 3.3"
 gem "chartkick", "~> 5.2"
 gem "groupdate", "~> 6.8"
 
-gem "tailwindcss-rails", "~> 4.4"
+gem "tailwindcss-rails", "~> 4.6"
